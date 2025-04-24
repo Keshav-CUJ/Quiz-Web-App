@@ -1,105 +1,123 @@
-# Quiz App
+# 🎯 Quiz Web App
 
-## 📌 Overview
+## 📚 Project Overview
 
-This is a Flask-based Quiz Application that allows users to:
+**Quiz App** is a **multi-user exam preparation platform** designed to streamline quiz creation and assessment.  
+- **Admins** can create quizzes, manage content, and track user performance.  
+- **Users** can register, attempt quizzes, and review performance analytics.
 
-Register and log in as a user or admin.
+> Built using **Flask**, with RESTful APIs, SQLAlchemy ORM, and dynamic frontend integration using **JavaScript**.
 
-Create quizzes with Multiple-choice questions.
+---
 
-Answer quizzes and submit responses.
+## 🚀 Key Features
 
-View quiz results.
+### 👩‍🏫 Admin Functionalities
+- 🧑‍🏫 **User Management**: Create and manage subjects, chapters, quizzes, and questions  
+- 📝 **Quiz Creation**: Add multiple-choice questions to quizzes  
+- 📊 **Admin Dashboard**: Visualize subjects, quiz counts, and statistics  
+- 📈 **Performance Summary**: Analyze user attempts and scores  
 
-Restful API design.
+### 🙋‍♂️ User Functionalities
+- 🔐 **User Registration & Login**  
+- 🧠 **Attempt Quizzes**: Timed multiple-choice questions  
+- 🕒 **Score History**: View previous attempts and results  
+- 📉 **Performance Summary**: Track progress with graphs and stats  
 
-SQLALCHEMY as ORM.
+---
 
-Javascript for dynamic loading and handling API responses.
+## 🖼️ Dashboard Screenshots
 
-## **Features**
-### **Admin Functionalities**  
-    **User Management** – Manage subjects, chapters, quizzes, and questions  
-    **Quiz Creation** – Add quizzes with multiple questions  
-    **Admin Dashboard** – View subjects, quizzes, and question statistics  
-    **Performance Summary** – Analyze user scores and quiz attempts  
-
-### **User Functionalities**  
-    **User Registration & Login**  
-    **Attempt Quizzes** – Multiple-choice questions with time duration  
-    **View Score History** – See past quiz attempts  
-    **Performance Summary** – Graphical representation of quiz performance  
-
-## 🖼️ Dashboard Screenshots (Click on image for full view)
-
-
-### 🏠 Admin Dashboard (You can add, edit, delete subjects, chapters and quizzes and view summary)
+### 🏠 Admin Dashboard
+Manage content, view stats, and create quizzes effortlessly:
 
 <p align="center">
-  <img src="./Pictures/a1.png" width="400" />
-  <img src="./Pictures/a1.png" width="400" />
+  <img src="./Pictures/a1.png" width="400"/>
+  <img src="./Pictures/a2.png" width="400"/>
 </p>
 <p align="center">
-  <img src="./Pictures/a1.png" width="400" />
-  <img src="./Pictures/a1.png" width="400" />
+  <img src="./Pictures/a3.png" width="400"/>
+  <img src="./Pictures/a4.png" width="400"/>
 </p>
 
-### 🕒 User Dashboard (You can view all subjects, chapters and quizzes and attempty any quiz only once and view summary)
+---
+
+### 👨‍🎓 User Dashboard
+Browse and attempt quizzes, track your history:
 
 <p align="center">
-  <img src="./Pictures/a1.png" width="400" />
-  <img src="./Pictures/a1.png" width="400" />
+  <img src="./Pictures/u1.png" width="400"/>
+  <img src="./Pictures/u2.png" width="400"/>
 </p>
 <p align="center">
-  <img src="./Pictures/a1.png" width="400" />
-  <img src="./Pictures/a1.png" width="400" />
+  <img src="./Pictures/u3.png" width="400"/>
+  <img src="./Pictures/u4.png" width="400"/>
 </p>
 
-## **Tech Stack**
-- **Backend:** Flask (Python)
-- **Frontend:** Jinja2, HTML, CSS, Bootstrap
-- **Database:** SQLite
-- **Libraries Used:** Flask-SQLAlchemy, Flask-WTF
+---
 
+## 🧰 Tech Stack
+
+- **Backend:** Flask (Python)  
+- **Frontend:** HTML, CSS, Bootstrap, Jinja2  
+- **Database:** SQLite  
+- **Libraries:** `Flask-SQLAlchemy`, `Flask-WTF`, `Flask-Migrate`, `Flask-RESTful`, `Werkzeug`
+
+---
 
 ## 🛠️ Installation & Setup
 
+### 🔀 1. Clone the Repository
+```bash
+git clone https://github.com/Keshav-CUJ/Quiz-Web-App.git
+cd Quiz-Web-App
+```
 
-### 1️⃣ Clone the Repository
+### 🧪 2. Create & Activate Virtual Environment
 
-git clone https://github.com/23f2002880/quiz_master_23f2002880.git
+#### 🪠 Windows:
+```bash
+python -m venv venv
+Set-ExecutionPolicy Unrestricted -Scope Process
+venv\Scripts\activate
+```
 
+#### 🍏 macOS/Linux:
+```bash
+python3 -m venv venv
+source venv/bin/activate
+```
 
-cd quiz-app  (enter to the directory)
+### 📦 3. Install Dependencies
+```bash
+pip install flask flask_sqlalchemy flask_migrate flask_restful sqlalchemy Werkzeug
+```
 
-### 2️⃣ Create & Activate a Virtual Environment (ignore if running your own env)
+> ✅ *No need to create database — already set up.*
 
-### On Windows <br>
+---
 
-python -m venv venv <br>
-Set-ExecutionPolicy Unrestricted -Scope Process  (if aliasing issue) <br>
-venv\Scripts\activate <br>
+## 🔐 Login Credentials
 
-### On macOS/Linux <br>
-python3 -m venv venv <br>
-source venv/bin/activate <br>
+### Admin:
+- **Username:** `admin`  
+- **Password:** `admin123`
 
-### 3️⃣ Install Dependencies <br>
-pip install flask flask_sqlalchemy flask_migrate flask_restful sqlalchemy Werkzeug <br>
-### 4️⃣ Database is already set up. <br>
+### Dummy User:
+- **Username:** `user1`  
+- **Password:** `password`
 
-Admin Credentials: <br>
+---
 
-username : admin   <br>
-password : admin123 <br>
+### ▶️ 4. Run the Application
+```bash
+python app.py
+```
 
-Dummy user credentilas:  <br>
+App will be live at:  
+👉 **http://127.0.0.1:5000**
 
-username : user1  <br>
-password : password  <br>
+---
 
-### 5️⃣ Run the Application  <br>
-python app.py  <br>
+> For contributions, feature requests, or issues, feel free to open a pull request or raise an issue!
 
-The server will start at: http://127.0.0.1:5000
