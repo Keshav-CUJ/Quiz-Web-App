@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <title>User Home</title>
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="/user/dashboard">Home</a></li>
+            <li><a href="/user/profile">Profile</a></li>
+            <li><a href="/user/summary">Summary</a></li>
+            <li><a href="#" id="logout">Logout</a></li>
+        </ul>
+    </nav>
+
+    <h1>Welcome, {{ user_username }}!</h1>
+<div class="container">
+    <!-- Subjects Table -->
+<h2>Your Subjects</h2>
+<table border="1">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Subject Name</th>
+            <th>Description</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody id="subjectList"></tbody>
+</table>
+
+<!-- Chapters Table -->
+<div id="chaptersSection" style="display: none;">
+    <h2>Chapters</h2>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Chapter Name</th>
+                <th>Description</th>
+                <th>Subject ID</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="chapterList"></tbody>
+    </table>
+</div>
+
+<!-- Quizzes Table -->
+<div id="quizzesSection" style="display: none;">
+    <h2>Quizzes</h2>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Quiz ID</th>
+                <th>Chapter ID</th>
+                <th>Date</th>
+                <th>Time Duration</th>
+                <th>Remarks</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="quizList"></tbody>
+    </table>
+
+    
+</div>
+
+<h2>Attempted Quizzes</h2>
+<table border="1">
+    <thead>
+        <tr>
+            <th>Quiz ID</th>
+            <th>Subject</th>
+            <th>Chapter</th>
+            <th>Date of Attempt</th>
+            <th>Time of Attempt</th>
+            <th>Score (Obtained/Total)</th>
+        </tr>
+    </thead>
+    <tbody>   <!--  results and scores -->
+        {% for score, quiz in attempted_quizzes %}
+        <tr>
+            <td>{{ quiz.id }}</td>
+            <td>{{ quiz.chapter.subject.name }}</td>
+            <td>{{ quiz.chapter.name }}</td>
+            <td>{{ score.timestamp.strftime('%Y-%m-%d') }}</td>
+            <td>{{ score.timestamp.strftime('%H:%M:%S') }}</td>
+            <td>{{ score.total_score }} / {{ quiz.questions|length }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+</div>
+    <script src="{{ url_for('static', filename='js/user.js') }}"></script>
+
+    <script>
+        // ✅ Check if user session is active
+        window.onload = function() {
+            checkUserSession();
+            loadSubjects(); // ✅ Load subjects when the page loads
+        };
+
+        function checkUserSession() {
+            fetch("/api/check_user_session")
+            .then(response => response.json())
+            .then(data => {
+                if (!data.logged_in) {
+                    window.location.href = "/";  // Redirect to homepage if session expired
+                }
+            })
+            .catch(error => console.error("Error checking session:", error));
+        }
+
+        // ✅ Prevent Browser Back After Logout
+        window.history.pushState(null, "", window.location.href);
+        window.addEventListener("popstate", function () {
+            window.history.pushState(null, "", window.location.href);
+        });
+
+        // ✅ Logout
+        document.getElementById("logout").addEventListener("click", function() {
+            fetch("/api/logout/user", { method: "POST" })
+            .then(response => {
+                if (response.redirected) {
+                    window.location.href = response.url; // Redirect properly
+                } else {
+                    return response.json();
+                }
+            })
+            .then(data => {
+                if (data && data.message) {
+                    alert(data.message);
+                }
+            })
+            .catch(error => console.error("Error:", error));
+        });
+    </script>
+
+</body>
+</html>

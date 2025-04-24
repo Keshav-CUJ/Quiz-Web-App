@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Summary</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0,0,0,0.2);
+        }
+        canvas {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <ul>
+            <li><a href="/user/dashboard">Home</a></li>
+            <li><a href="/user/profile">Profile</a></li>
+            <li><a href="/user/summary">Summary</a></li>
+            <li><a href="#" id="logout">Logout</a></li>
+        </ul>
+    </nav>
+
+    <h1>📊 User Summary Dashboard</h1>
+
+    <!-- Subject-wise Number of Quizzes (Histogram) -->
+    <div class="container">
+        <h2>📊 Number of Quizzes by Subject</h2>
+        <canvas id="quizCountChart"></canvas>
+    </div>
+
+    <!-- Subject-wise Top Scores (Histogram) -->
+    <div  class="container">
+        <h2>🏆 Top Scores by Subject</h2>
+        <canvas id="topScoresChart"></canvas>
+    </div>
+
+    
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            fetch("/api/user/summary")  // Fetch summary data from Flask API
+                .then(response => response.json())
+                .then(data => {
+                    console.log("📊 Summary Data:", data); // Debugging
+
+                    // 🔹 Subject-wise Quiz Count (Histogram)
+                    const subjects = data.quiz_count.map(item => item.subject);
+                    const quizCounts = data.quiz_count.map(item => item.count);
+
+                    new Chart(document.getElementById("quizCountChart"), {
+                        type: "bar",
+                        data: {
+                            labels: subjects,
+                            datasets: [{
+                                label: "Number of Quizzes by Subject",
+                                data: quizCounts,
+                                backgroundColor: "rgba(255, 99, 132, 0.6)"
+                            }]
+                        },
+                        options: {
+                            scales: { y: { beginAtZero: true } }
+                        }
+                    });
+
+                    // 🔹 Subject-wise Top Scores (Histogram)
+                    const topScores = data.top_scores.map(item => item.score);
+
+                    new Chart(document.getElementById("topScoresChart"), {
+                        type: "bar",
+                        data: {
+                            labels: subjects,
+                            datasets: [{
+                                label: "Top Scores by Subject",
+                                data: topScores,
+                                backgroundColor: "rgba(54, 162, 235, 0.6)"
+                            }]
+                        },
+                        options: {
+                            scales: { y: { beginAtZero: true } }
+                        }
+                    });
+
+                    // 🔹 Subject-wise User Attempts (Pie Chart)
+                    const userAttempts = data.user_attempts.map(item => item.attempts);
+
+                    new Chart(document.getElementById("userAttemptsChart"), {
+                        type: "pie",
+                        data: {
+                            labels: subjects,
+                            datasets: [{
+                                label: "User Attempts by Subject",
+                                data: userAttempts,
+                                backgroundColor: ["#ff6384", "#36a2eb", "#ffce56", "#4bc0c0"]
+                            }]
+                        },
+                        options: {
+                            scales: { y: { beginAtZero: true } }
+                        }
+                    });
+
+                })
+                .catch(error => console.error("❌ Error fetching summary:", error));
+        });
+
+        // ✅ Check if user session is active
+        window.onload = function() {
+            checkUserSession();
+            loadSubjects(); // ✅ Load subjects when the page loads
+        };
+
+        function checkUserSession() {
+            fetch("/api/check_user_session")
+            .then(response => response.json())
+            .then(data => {
+                if (!data.logged_in) {
+                    window.location.href = "/";  // Redirect to homepage if session expired
+                }
+            })
+            .catch(error => console.error("Error checking session:", error));
+        }
+
+        // ✅ Prevent Browser Back After Logout
+        window.history.pushState(null, "", window.location.href);
+        window.addEventListener("popstate", function () {
+            window.history.pushState(null, "", window.location.href);
+        });
+
+        // ✅ Logout
+        document.getElementById("logout").addEventListener("click", function() {
+            fetch("/api/logout/user", { method: "POST" })
+            .then(response => {
+                if (response.redirected) {
+                    window.location.href = response.url; // Redirect properly
+                } else {
+                    return response.json();
+                }
+            })
+            .then(data => {
+                if (data && data.message) {
+                    alert(data.message);
+                }
+            })
+            .catch(error => console.error("Error:", error));
+        });
+    </script>
+
+</body>
+</html>

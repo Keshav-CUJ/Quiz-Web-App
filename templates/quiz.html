@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz</title>
+    <script src="{{ url_for('static', filename='js/user.js') }}"></script>
+    <style>
+        /* Status Indicator Buttons */
+#statusContainer button {
+    width: 40px;
+    height: 40px;
+    margin: 5px;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    border-radius: 50%;
+    transition: transform 0.2s;
+}
+
+#statusContainer button:hover {
+    transform: scale(1.1);
+}
+
+.status-Not-Visited { background-color: grey; color: black; }
+.status-Not-Answered { background-color: brown; color: white; }
+.status-Answered { background-color: green; color: white; }
+.status-Marked-for-Review { background-color: yellow; color: black; }
+
+    </style>
+</head>
+<body>
+    <h1>Quiz ID: {{ quiz_id }}</h1>
+    
+    <div id="timer"></div>
+    
+    <!-- Question Display -->
+    <div id="questionContainer"></div>
+
+    <!-- Navigation Buttons -->
+    
+
+    <button id="prevButton" onclick="prevQuestion()" style="display: none; margin-top: 2px;padding: 5px; border-radius: 5px;">Previous</button>
+    <button id="nextButton" onclick="nextQuestion()" style="background-color: blue; margin-top: 2px;color: white; padding: 5px; border-radius: 5px;">Next</button>
+    
+    <button onclick="leaveQuiz()" id="leaveButton" style="background-color:red;color:white; margin-top: 2px;padding: 5px; border-radius: 5px;">Leave Quiz</button>
+    <button id="submitButton" onclick="submitQuiz()" style="display: none; margin-top: 2px;padding: 5px; border-radius: 5px;">Submit Quiz</button>
+    
+    <div id="questionStatusPanel">
+        <h3>Question Status</h3>
+        <div id="statusContainer"></div>
+    </div>
+    
+    <script>
+        let quizId = "{{ quiz_id }}";
+        fetch(`/api/question_status/init/${quizId}`, { method: "POST" })
+        .then(response => response.json())
+        .then(data => console.log("✅ Question statuses initialized:", data))
+        .catch(error => console.error("❌ Error initializing question statuses:", error));
+
+        startCountdown("{{ duration }}"); // Start the timer in HH:MM:SS format
+        loadQuestions(quizId);
+
+
+        document.addEventListener("DOMContentLoaded", function () {
+            let isAdmin = false // Change this to 'false' for users
+          
+            if (!isAdmin) {
+              // Disable right-click
+              document.addEventListener("contextmenu", function (e) {
+                e.preventDefault();
+              });
+          
+              // Disable text selection
+              document.addEventListener("selectstart", function (e) {
+                e.preventDefault();
+              });
+          
+              // Disable Ctrl+C, Ctrl+X, Ctrl+V
+              document.addEventListener("keydown", function (e) {
+                if (e.ctrlKey && (e.key === "c" || e.key === "x" || e.key === "v")) {
+                  e.preventDefault();
+                }
+              });
+          
+              // Prevent opening DevTools
+              document.addEventListener("keydown", function (e) {
+                if (e.key === "F12" || (e.ctrlKey && e.shiftKey && e.key === "I")) {
+                  e.preventDefault();
+                }
+              });
+            }
+          });
+          
+          
+    </script>
+    
+</body>
+</html>

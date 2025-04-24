@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Quizzes</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <ul>
+            <li><a href="/admin/dashboard">Dashboard</a></li>
+            <li><a href="/admin/quizzes">Manage Quizzes</a></li>
+            <li><a href="/admin/summary">Summary</a></li>
+            <li><a href="#" id="logout">Logout</a></li>
+        </ul>
+    </nav>
+<div class="container">
+    <h1>Manage Quizzes</h1>
+
+    <!-- Filter Quizzes -->
+    <h2>Filter Quizzes</h2>
+    <label>Subject: </label>
+    <select id="filterSubject">
+        <option value="">All Subjects</option>
+        {% for subject in subjects %}
+            <option value="{{ subject.id }}">{{ subject.name }}</option>
+        {% endfor %}
+    </select>
+
+    <label>Chapter: </label>
+    <select id="filterChapter">
+        <option value="">All Chapters</option>
+    </select>
+
+    <button onclick="loadQuizzes()">Filter</button>
+
+    <!-- Quiz List -->
+    <h2>Existing Quizzes</h2>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Chapter</th>
+                <th>Subject</th>
+                <th>Date</th>
+                <th>Time Duration</th>
+                <th>Remarks</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="quizList"></tbody>
+    </table>
+    
+
+   
+    <!-- Add New Quiz -->
+<h2>Add New Quiz</h2>
+<label>Subject: </label>
+<select id="newQuizSubject">
+    <option value="">Select Subject</option>
+    {% for subject in subjects %}
+        <option value="{{ subject.id }}">{{ subject.name }}</option>
+    {% endfor %}
+</select>
+
+<label>Chapter: </label>
+<select id="newQuizChapter">
+    <option value="">Select Chapter</option>
+</select>
+<br>
+<label>Date: </label>
+<input type="date" id="quizDate">
+<br>
+<label>Time Duration (HH:MM): </label>
+<input type="text" id="quizTimeDuration" placeholder="00:30">
+<br>
+<label>Remarks: </label>
+<input type="text" id="quizRemarks">
+
+<button onclick="addQuiz()">Add Quiz</button>
+
+</div>
+    <script>
+        // Check if admin session is active
+     window.onload = function() {
+     fetch("/api/check_admin_session")
+     .then(response => response.json())
+     .then(data => {
+         if (!data.logged_in) {
+             window.location.href = "/";  // Redirect to homepage if session expired
+         }
+     })
+     .catch(error => console.error("Error checking session:", error));
+ };
+     
+         document.getElementById("logout").addEventListener("click", function() {
+             fetch("/api/logout/admin", { method: "POST" })
+             .then(response => {
+                 if (response.redirected) {
+                     window.location.href = response.url; // Redirect properly
+                 } else {
+                     return response.json();
+                 }
+             })
+             .then(data => {
+                 if (data && data.message) {
+                     alert(data.message);
+                 }
+             })
+             .catch(error => console.error("Error:", error));
+         });
+     </script>
+     
+
+    <script src="{{ url_for('static', filename='js/quiz_script.js') }}"></script>
+</body>
+</html>

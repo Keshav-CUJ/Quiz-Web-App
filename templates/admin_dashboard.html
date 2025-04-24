@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Home</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    </head>
+<body>
+   <!-- Navigation Bar -->
+   <nav>
+    <ul>
+        <li><a href="/admin/dashboard">Home</a></li>
+        <li><a href="/admin/summary">Summary</a></li>
+        <li><a href="/admin/quizzes">Quizzes</a></li>
+        <li><a href="#" id="logout">Logout</a></li>
+    </ul>
+</nav>
+
+    <div class="container">
+        <div class="container">
+            <h1>Welcome, Admin!</h1>
+            <p>Manage subjects for quizzes.</p>
+        
+            <!-- Subject Management Section -->
+            <h2>Subjects</h2>
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th>Subject Name</th>
+                        <th>Description</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="subjectList">
+                    <!-- Subjects will be loaded dynamically -->
+                </tbody>
+            </table>
+        
+            <!-- Add Subject Form -->
+            <h3>Add New Subject</h3>
+         <form id="addSubjectForm">
+         <input type="text" id="newSubjectName" placeholder="Enter subject name" required>
+         <input type="text" id="newSubjectDescription" placeholder="Enter subject description">
+        <button type="submit">Add Subject</button>
+        </form>
+        
+        <h2>Chapters</h2>
+       <table border="1">
+        <thead>
+         <tr>
+            <th>Chapter Name</th>
+            <th>Description</th>
+            <th>Subject</th>
+            <th>Actions</th>
+         </tr>
+        </thead>
+        <tbody id="chapterList">
+        <!-- Chapters will be dynamically added here -->
+    </tbody>
+        </table>
+
+<!-- Add Chapter Form -->
+<h3>Add New Chapter</h3>
+<form id="addChapterForm">
+    <input type="text" id="newChapterName" placeholder="Enter chapter name" required>
+    <input type="text" id="newChapterDescription" placeholder="Enter chapter description">
+    <select id="chapterSubjectSelect">
+        <option value="">Select Subject</option>
+        <!-- Subjects will be loaded dynamically -->
+    </select>
+    <button type="submit">Add Chapter</button>
+</form>
+
+
+
+
+        </div>
+    </div>
+    
+     
+    
+    <script>
+       // Check if admin session is active
+    window.onload = function() {
+    fetch("/api/check_admin_session")
+    .then(response => response.json())
+    .then(data => {
+        if (!data.logged_in) {
+            window.location.href = "/";  // Redirect to homepage if session expired
+        }
+    })
+    .catch(error => console.error("Error checking session:", error));
+};
+    
+        document.getElementById("logout").addEventListener("click", function() {
+            fetch("/api/logout/admin", { method: "POST" })
+            .then(response => {
+                if (response.redirected) {
+                    window.location.href = response.url; // Redirect properly
+                } else {
+                    return response.json();
+                }
+            })
+            .then(data => {
+                if (data && data.message) {
+                    alert(data.message);
+                }
+            })
+            .catch(error => console.error("Error:", error));
+        });
+    </script>
+    <script src="{{ url_for('static', filename='js/admin.js') }}"></script>
+</body>
+</html>
+
